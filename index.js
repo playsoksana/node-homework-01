@@ -20,19 +20,59 @@ const argv = program.opts();
 function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case "list":
-      listContacts().then(contacts=>console.table(contacts)).catch(err=>err.message);
+      (async () => {
+        try {
+          const contacts = await listContacts();
+          if (contacts[0]) {
+            console.table(contacts);
+            return;
+          }
+          console.log("No contacts");
+        } catch (err) {
+          console.log(err.message);
+        }
+      })();
       break;
 
     case "get":
-      getContactById(id).then(contact=>console.log('Result:', ...contact)).catch(err=>err.message);
+      (async () => {
+        try {
+          const contactById = await getContactById(id);
+          if (contactById[0]) {
+            console.log("Result:", ...contactById);
+            return;
+          }
+          console.log("No such a contact");
+        } catch (err) {
+          console.log(err.message);
+        }
+      })();
       break;
 
     case "add":
-      addContact(name, email, phone).then(contact=>console.log("Add contact:", contact)).catch(err=>err.message);
+      (async () => {
+        try {
+          const newContact = await addContact(name, email, phone);
+          console.log("Add contact:", newContact);
+        } catch (err) {
+          console.log(err.message);
+        }
+      })();
       break;
 
     case "remove":
-      removeContact(id).then(contacts=>console.log("Remaining contacts:", contacts)).catch(err=>err.message);
+      (async () => {
+        try {
+          const contacts = await removeContact(id);
+          if (contacts[0]) {
+            console.log("Remaining contacts:", contacts);
+            return;
+          }
+          console.log("No more contacts");
+        } catch (err) {
+          console.log(err.message);
+        }
+      })();
       break;
 
     default:
